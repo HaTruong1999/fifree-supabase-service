@@ -1,4 +1,4 @@
-import { getFunds, addFund } from "../services/fundService.js";
+import { getFunds, getFundsPortfolioStats } from "../services/fundService.js";
 import { sendResponse, sendError } from "../utils/responseHelper.js";
 
 export const getAllFunds = async (req, res) => {
@@ -7,6 +7,16 @@ export const getAllFunds = async (req, res) => {
     sendResponse(res, 200, "Funds fetched successfully", data);
   } catch (error) {
     sendError(res, 500, "Failed to fetch Funds", error.message);
+  }
+};
+
+export const getAllFundsPortfolioStats = async (req, res) => {
+  try {
+    const data = await getFundsPortfolioStats();
+
+    sendResponse(res, 200, "Funds Portfolio Stats:", data);
+  } catch (error) {
+    sendError(res, 500, "Unexpected error:", error.message);
   }
 };
 
