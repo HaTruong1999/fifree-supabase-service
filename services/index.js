@@ -10,11 +10,15 @@ export const getPeriods = (start_date, end_date) => {
   let resutlData = [];
 
   for (let year = startYear; year <= currentYear; year++) {
-    for (let month = startMonth; month <= 12; month++) {
-      if (year === currentYear && month > currentMonth) {
-        return resutlData;
+    for (let month = 1; month <= 12; month++) {
+      if (year === startYear) {
+        if (month >= startMonth) resutlData.push(`${month}/${year}`);
+      } else {
+        if (year === currentYear && month > currentMonth) {
+          return resutlData;
+        }
+        resutlData.push(`${month}/${year}`);
       }
-      resutlData.push(`${month}/${year}`);
     }
   }
 

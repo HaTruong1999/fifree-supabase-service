@@ -1,15 +1,16 @@
 import {
-  getFundsPortfolioByMonth,
+  getFundsPortfolioStatsByMonth,
   getFundsPortfolioGroupByStock,
   addListFundsPortfolio,
-  getFundsPortfolioByFundAndTime,
+  getFundsPortfolioByMonth,
+  getFundsPortfolioByMonthGroupByStock,
 } from "../services/fundPortfolioService.js";
 import { sendResponse, sendError } from "../utils/responseHelper.js";
 
-export const getAllFundsPortfolioByMonth = async (req, res) => {
+export const getAllFundsPortfolioStatsByMonth = async (req, res) => {
   try {
     const { category, start_date, end_date, search_stock } = req.query;
-    const data = await getFundsPortfolioByMonth(category, start_date, end_date, search_stock);
+    const data = await getFundsPortfolioStatsByMonth(category, start_date, end_date, search_stock);
     sendResponse(res, 200, "Funds Portfolio stats by month fetched successfully", data);
   } catch (error) {
     sendError(res, 500, "Failed to fetch Funds Portfolio By Month", error.message);
@@ -26,10 +27,30 @@ export const getAllFundsPortfolioGroupByStock = async (req, res) => {
   }
 };
 
+export const getAllFundsPortfolioByMonth = async (req, res) => {
+  const { period, fund_code, search_stock } = req.query;
+  try {
+    const data = await getFundsPortfolioByMonth(period, fund_code, search_stock);
+    sendResponse(res, 200, "Funds portfolio by month successfully", data);
+  } catch (error) {
+    sendError(res, 500, "Failed to get by month Funds portfolio", error.message);
+  }
+};
+
+export const getAllFundsPortfolioByMonthGroupByStock = async (req, res) => {
+  const { period, search_stock } = req.query;
+  try {
+    const data = await getFundsPortfolioByMonthGroupByStock(period, search_stock);
+    sendResponse(res, 200, "Funds portfolio by month group by stock successfully", data);
+  } catch (error) {
+    sendError(res, 500, "Failed to get by month Funds portfolio", error.message);
+  }
+};
+
 export const checkExistFundsPortfolio = async (req, res) => {
   const { period, fund_code } = req.query;
   try {
-    const data = await getFundsPortfolioByFundAndTime(period, fund_code);
+    const data = await getFundsPortfolioByMonth(period, fund_code);
     sendResponse(res, 200, "Funds portfolio check exist successfully", data);
   } catch (error) {
     sendError(res, 500, "Failed to check exist Funds portfolio", error.message);
