@@ -49,14 +49,22 @@ export const getFundsPortfolioStatsByMonth = async (category = "quantity", start
 export const getFundsPortfolioGroupByStock = async (category = "quantity", startDate, endDate, search_stock) => {
   const periods = getPeriods(startDate, endDate);
 
-  const search_stock_code_string = search_stock
-    ? search_stock.length === 2
-      ? `${search_stock}%`
-      : search_stock.length === 1
-      ? `${search_stock}%%`
-      : search_stock
-    : "";
-  const query_search = search_stock_code_string ? `WHERE fp.stock_code ILIKE '${search_stock_code_string}'` : "";
+  let query_search = "";
+
+  if (search_stock) {
+    if (search_stock.length <= 3) {
+      const search_stock_code_string =
+        search_stock.length === 2 ? `${search_stock}%` : search_stock.length === 1 ? `${search_stock}%%` : search_stock;
+
+      query_search = `WHERE fp.stock_code ILIKE '${search_stock_code_string}'`;
+    } else {
+      const conditionSearch = search_stock
+        .split(",")
+        .map((e) => `'${e}'`)
+        .join(", ");
+      query_search = `WHERE fp.stock_code IN (${conditionSearch})`;
+    }
+  }
 
   const stringPeriods = periods
     .map((p) => `SUM(CASE WHEN fp.period = '${p}' THEN ${category} ELSE 0 END) AS "${p}"`)
