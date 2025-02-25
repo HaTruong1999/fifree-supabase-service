@@ -1,7 +1,7 @@
 import { getFunds, getFundsPortfolioStats } from "../services/fundService.js";
 import { sendResponse, sendError } from "../utils/responseHelper.js";
 
-export const getAllFunds = async (req, res) => {
+export const getAllFunds = async (_req, res) => {
   try {
     const data = await getFunds();
     sendResponse(res, 200, "Funds fetched successfully", data);
@@ -10,7 +10,7 @@ export const getAllFunds = async (req, res) => {
   }
 };
 
-export const getAllFundsPortfolioStats = async (req, res) => {
+export const getAllFundsPortfolioStats = async (_req, res) => {
   try {
     const data = await getFundsPortfolioStats();
 

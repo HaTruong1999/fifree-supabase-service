@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import fundRoutes from "../routes/fundRoutes.js";
 import fundPortfolioRoutes from "../routes/fundPortfolioRoutes.js";
 import stockRoutes from "../routes/stockRoutes.js";
+import fetchDataRoutes from "../routes/fetchDataRoutes.js";
 
 dotenv.config();
 
@@ -15,6 +16,7 @@ app.use(express.json()); // Middleware to parse JSON request body
 app.use("/api/funds", fundRoutes);
 app.use("/api/funds-portfolio", fundPortfolioRoutes);
 app.use("/api/stock-following", stockRoutes);
+app.use("/api/fetch-data", fetchDataRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
