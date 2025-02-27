@@ -6,3 +6,10 @@ export const getStockFollowing = async () => {
   if (error) throw new Error(error.message);
   return data;
 };
+
+export const addListStocks = async (arrayInput) => {
+  const { data, error } = await supabase.from("stocks").insert(arrayInput);
+
+  if (error) throw new Error(error.message);
+  return data;
+};

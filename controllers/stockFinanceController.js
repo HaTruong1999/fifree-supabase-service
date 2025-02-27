@@ -2,7 +2,8 @@ import {
   getFinanceInfoFromFinanceVietstock,
   doSyncFinanceInfoFromFinanceVietstock,
   getFinanceInfoByStock,
-} from "../services/fetchDataService.js";
+  getFinanceInfoByCategory,
+} from "../services/stockFinanceService.js";
 import { sendResponse, sendError } from "../utils/responseHelper.js";
 
 export const getAllFinanceInfoByStock = async (req, res) => {
@@ -16,6 +17,22 @@ export const getAllFinanceInfoByStock = async (req, res) => {
 
     const data = await getFinanceInfoByStock(stock, periods, type);
     sendResponse(res, 200, "Get Finance information successfully!", data);
+  } catch (error) {
+    sendError(res, 500, "Failed to fetch", error.message);
+  }
+};
+
+export const getAllFinanceInfoByCategory = async (req, res) => {
+  try {
+    const { periods, type, category_id, report_component } = req.body;
+
+    if (!periods || !type || !category_id || !report_component) {
+      sendResponse(res, 200, "Stock code, periods, type, category_id, report_component are required!");
+      return;
+    }
+
+    const data = await getFinanceInfoByCategory(periods, type, category_id, report_component);
+    sendResponse(res, 200, "Get Finance information by category successfully!", data);
   } catch (error) {
     sendError(res, 500, "Failed to fetch", error.message);
   }

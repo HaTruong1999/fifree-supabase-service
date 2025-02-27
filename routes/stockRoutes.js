@@ -1,8 +1,9 @@
 import express from "express";
-import { getAllStockFollowing } from "../controllers/stockController.js";
+import { getAllStockFollowing, createListStocks } from "../controllers/stockController.js";
 
 const router = express.Router();
 
-router.get("/", getAllStockFollowing);
+router.get("/following", getAllStockFollowing);
+router.post("/create-lists", createListStocks);
 
 export default router;
