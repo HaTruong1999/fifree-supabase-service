@@ -5,6 +5,7 @@ import fundRoutes from "../routes/fundRoutes.js";
 import fundPortfolioRoutes from "../routes/fundPortfolioRoutes.js";
 import stockRoutes from "../routes/stockRoutes.js";
 import stockFinanceRoutes from "../routes/stockFinanceRoutes.js";
+import proxyRoutes from "../routes/proxyRoutes.js";
 
 dotenv.config();
 
@@ -17,6 +18,8 @@ app.use("/api/funds", fundRoutes);
 app.use("/api/funds-portfolio", fundPortfolioRoutes);
 app.use("/api/stock", stockRoutes);
 app.use("/api/stock-finance", stockFinanceRoutes);
+app.use('/proxy', proxyRoutes);
+
 
 // Error handling middleware
 app.use((err, req, res, next) => {
