@@ -23,7 +23,6 @@ export const handleProxyRequest = async (req, res) => {
 
     const contentType = response.headers.get('content-type') || 'application/octet-stream';
     const arrayBuffer = await response.arrayBuffer();
-    console.log('File size:', arrayBuffer.byteLength, 'bytes');
 
     const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB
     if (arrayBuffer.byteLength > MAX_FILE_SIZE) {
