@@ -1,6 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { createExtractorFromFile } from 'node-unrar-js';
+import axios from 'axios';
 
 function bufferToBase64(buffer) {
   return Buffer.from(buffer).toString('base64');
@@ -109,6 +110,49 @@ async function cleanupTempFiles(tempOutputDir, tempRarPath) {
   }
 }
 
+async function extractExcelBuffer(url) {
+  const response = await axios.get(url, { responseType: 'arraybuffer' });
+
+  if (response.status !== 200 || !response.data) {
+    throw new Error(`Failed to fetch file: HTTP ${response.status}`);
+  }
+
+  const contentType = response.headers['content-type'] || '';
+  const buffer = Buffer.from(response.data);
+  const isRar = url.toLowerCase().endsWith('.rar') || contentType.includes('rar');
+
+  let tempOutputDir, tempRarPath;
+
+  try {
+    if (isRar) {
+      tempRarPath = await saveRarFile(buffer);
+      const files = await listRarFiles(tempRarPath);
+
+      const excelFile = files.find(f =>
+        f.name.toLowerCase().includes('danhmuc') &&
+        (f.name.endsWith('.xlsx') || f.name.endsWith('.xls'))
+      );
+
+      if (!excelFile) throw new Error('No target Excel file found in RAR archive');
+
+      tempOutputDir = `${process.cwd()}/temp/extracted-${Date.now()}`;
+      await extractRarArchive(tempRarPath, tempOutputDir);
+      const extractedPath = path.join(tempOutputDir, excelFile.name);
+
+      const exists = await fs.access(extractedPath).then(() => true).catch(() => false);
+      if (!exists) throw new Error('Extracted Excel file not found');
+
+      return await fs.readFile(extractedPath);
+    }
+
+    return buffer;
+  } finally {
+    await cleanupTempFiles(tempOutputDir, tempRarPath);
+  }
+}
+
+
+
 export {
   bufferToBase64,
   listDirRecursive,
@@ -117,4 +161,5 @@ export {
   extractRarArchive,
   readExtractedFile,
   cleanupTempFiles,
+  extractExcelBuffer
 };
